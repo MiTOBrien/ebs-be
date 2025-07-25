@@ -5,6 +5,9 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
+  has_many :user_roles, dependent: :destroy
+  has_many :roles, through: :user_roles
+
   # Required for self revocation strategy
   def self.jwt_revoked?(payload, user)
     user.jti != payload['jti']
