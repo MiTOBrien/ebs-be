@@ -8,6 +8,9 @@ class User < ApplicationRecord
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
 
+  has_many :user_genres, dependent: :destroy
+  has_many :genres, through: :user_genres
+
   # Required for self revocation strategy
   def self.jwt_revoked?(payload, user)
     user.jti != payload['jti']
