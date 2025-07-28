@@ -5,11 +5,28 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
+  has_many :subscriptions, dependent: :destroy
+  has_one :current_subscription, -> { where(status: 'active') }, class_name: 'Subscription'
+  
+  # Add validation
+  validates :subscription_type, inclusion: { in: %w[free monthly annual] }
+  validates :subscription_status, inclusion: { in: %w[active cancelled past_due incomplete] }
+  
+  before_validation :set_subscription_defaults, on: :create
+
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
 
   has_many :user_genres, dependent: :destroy
   has_many :genres, through: :user_genres
+
+  def has_role?(role_name)
+    roles.exists?(name: role_name)
+  end
+
+  def role_names
+    roles.pluck(:name)
+  end
 
   # Required for self revocation strategy
   def self.jwt_revoked?(payload, user)
@@ -24,6 +41,12 @@ class User < ApplicationRecord
   before_create :generate_jti
 
   private
+
+  def set_subscription_defaults
+    self.charges_for_services ||= false
+    self.subscription_type ||= 'free'
+    self.subscription_status ||= 'active'
+  end
 
   def generate_jti
     self.jti = SecureRandom.uuid
