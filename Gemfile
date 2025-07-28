@@ -42,9 +42,16 @@ gem 'devise-jwt'
 # Use for Serializers
 gem 'jsonapi-serializer'
 
+# Handle test coverage
+gem 'simplecov', require: false, group: :test
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
+  gem 'rspec-rails', '~> 7.0.0'
+  gem "pry"
+  gem "shoulda-matchers"
+  gem "factory_bot_rails"
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
