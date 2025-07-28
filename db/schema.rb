@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_26_151950) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_28_180126) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -24,6 +24,21 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_26_151950) do
     t.string "role"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.text "subscription_type"
+    t.text "status"
+    t.text "stripe_subscription_id"
+    t.text "stripe_customer_id"
+    t.datetime "current_period_start"
+    t.datetime "current_period_end"
+    t.integer "amount_cents"
+    t.text "currency"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
   create_table "user_genres", force: :cascade do |t|
@@ -63,11 +78,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_26_151950) do
     t.string "facebook"
     t.string "instagram"
     t.string "x"
+    t.boolean "charges_for_services"
+    t.text "subscription_type"
+    t.text "subscription_status"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "subscriptions", "users"
   add_foreign_key "user_genres", "genres"
   add_foreign_key "user_genres", "users"
   add_foreign_key "user_roles", "roles"
