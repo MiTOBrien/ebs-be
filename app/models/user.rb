@@ -20,12 +20,12 @@ class User < ApplicationRecord
   has_many :user_genres, dependent: :destroy
   has_many :genres, through: :user_genres
 
-  def has_role?(role_name)
-    roles.exists?(name: role_name)
-  end
+  # def role_names=(names)
+  #   self.roles = names.map { |name| Role.find_by(name: name) }.compact
+  # end
 
   def role_names
-    roles.pluck(:name)
+    roles.pluck(:role)
   end
 
   # Required for self revocation strategy

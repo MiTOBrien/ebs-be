@@ -28,8 +28,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def sign_up_params
     params.require(:user).permit(:email, :password, :password_confirmation, 
-                                 :charges_for_services, :subscription_type, 
-                                 roles: [])
+                                 :charges_for_services, :subscription_type)
   end
 
   def handle_subscription_creation(user)
@@ -146,7 +145,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
       mapped_role_name = role_mapping[role_name.downcase]
       
       if mapped_role_name
-        role = Role.find_by(name: mapped_role_name)
+        role = Role.find_by(role: mapped_role_name)
         if role
           user.user_roles.create!(role: role)
         else
