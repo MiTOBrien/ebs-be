@@ -38,6 +38,7 @@ gem "rack-cors"
 # Use for Authorization and Authentication
 gem 'devise'
 gem 'devise-jwt'
+gem 'stripe'
 
 # Use for Serializers
 gem 'jsonapi-serializer'
