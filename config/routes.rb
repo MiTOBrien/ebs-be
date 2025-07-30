@@ -16,4 +16,6 @@ Rails.application.routes.draw do
     sessions: 'users/sessions',
     registrations: 'users/registrations'
   }
+
+  get 'readers', to: 'readers#index'
 end

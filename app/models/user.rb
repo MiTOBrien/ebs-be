@@ -9,6 +9,11 @@ class User < ApplicationRecord
   has_one :current_subscription, -> { where(status: 'active') }, class_name: 'Subscription'
   
   # Add validation
+  validates :email, presence: true, uniqueness: true
+  validates :username, presence: true, uniqueness: true
+  validates :first_name, :last_name, presence: true
+  validates :roles, presence: true
+
   validates :subscription_type, inclusion: { in: %w[free monthly annual] }
   validates :subscription_status, inclusion: { in: %w[active cancelled past_due incomplete] }
   
@@ -19,10 +24,6 @@ class User < ApplicationRecord
 
   has_many :user_genres, dependent: :destroy
   has_many :genres, through: :user_genres
-
-  # def role_names=(names)
-  #   self.roles = names.map { |name| Role.find_by(name: name) }.compact
-  # end
 
   def role_names
     roles.pluck(:role)
