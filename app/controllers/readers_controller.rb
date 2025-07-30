@@ -3,19 +3,14 @@ class ReadersController < ApplicationController
   
   def index
     begin
-      reader_roles = ['arcreader', 'betareader', 'proofreader']
+      reader_roles = ['Arc Reader', 'Beta Reader', 'Proof Reader']
       
-      # Query users who have any of the reader roles
-      # Adjust this query based on how your roles are stored:
-      
-      # If roles is a PostgreSQL array:
-      readers = User.where("roles && ARRAY[?]::varchar[]", reader_roles)
-      
-      # If roles is a JSON array:
-      # readers = User.where("JSON_EXTRACT(roles, '$[*]') REGEXP ?", reader_roles.join('|'))
-      
-      # If roles is stored as comma-separated string:
-      # readers = User.where("roles REGEXP ?", reader_roles.join('|'))
+      # Query users who have any of the reader roles through user_roles join table
+      readers = User.joins(:user_roles)
+                   .joins("JOIN roles ON roles.id = user_roles.role_id")
+                   .where("roles.role IN (?)", reader_roles)
+                   .distinct
+                   .includes(:roles) # Include roles to avoid N+1 queries
       
       readers_data = readers.map do |user|
         {
@@ -25,12 +20,12 @@ class ReadersController < ApplicationController
           last_name: user.last_name,
           email: user.email,
           bio: user.bio,
-          profile_photo: user.profile_photo,
-          roles: user.roles,
+          profile_picture: user.profile_picture,
+          roles: user.roles.pluck(:role), # Get array of role names
           charges_for_services: user.charges_for_services,
-          facebook_handle: user.facebook_handle,
-          instagram_handle: user.instagram_handle,
-          x_handle: user.x_handle,
+          facebook: user.facebook,
+          instagram: user.instagram,
+          x: user.x,
           created_at: user.created_at,
           updated_at: user.updated_at
         }

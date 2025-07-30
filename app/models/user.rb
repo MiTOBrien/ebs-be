@@ -12,7 +12,6 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :username, presence: true, uniqueness: true
   validates :first_name, :last_name, presence: true
-  validates :roles, presence: true
 
   validates :subscription_type, inclusion: { in: %w[free monthly annual] }
   validates :subscription_status, inclusion: { in: %w[active cancelled past_due incomplete] }
@@ -24,6 +23,20 @@ class User < ApplicationRecord
 
   has_many :user_genres, dependent: :destroy
   has_many :genres, through: :user_genres
+
+  # Scopes for easy querying
+  scope :readers, -> { joins(:roles).where(roles: { role: ['Arc Reader', 'Beta Reader', 'Proof Reader'] }).distinct }
+  scope :free_services, -> { where(charges_for_services: false) }
+  scope :paid_services, -> { where(charges_for_services: true) }
+  
+  # Helper methods
+  def has_role?(role_name)
+    roles.exists?(role: role_name)
+  end
+  
+  def reader?
+    ['Arc Reader', 'Beta Reader', 'Proof Reader'].any? { |role| has_role?(role) }
+  end
 
   def role_names
     roles.pluck(:role)
