@@ -17,5 +17,8 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
+  get 'users', to: 'users#index'
+  put 'users/:id', to: 'users#update'
+
   get 'readers', to: 'readers#index'
 end
