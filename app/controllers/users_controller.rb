@@ -1,4 +1,4 @@
-class Api::UsersController < ApplicationController
+class UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin_role!, only: [:index]
   before_action :set_user, only: [:update]
