@@ -42,15 +42,6 @@ class User < ApplicationRecord
     roles.pluck(:role)
   end
 
-  # Required for self revocation strategy
-  def self.jwt_revoked?(payload, user)
-    user.jti != payload['jti']
-  end
-
-  def self.revoke_jwt(payload, user)
-    user.update_column(:jti, SecureRandom.uuid)
-  end
-
   # Generate jti on user creation
   before_create :generate_jti
 
