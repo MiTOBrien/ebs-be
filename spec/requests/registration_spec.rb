@@ -35,9 +35,7 @@ RSpec.describe "User Registration", type: :request do
 
   it "creates a new user and returns a JWT token" do
     expect {
-      puts valid_attributes
       post "/signup", params: valid_attributes, as: :json
-      puts response.body
     }.to change(User, :count).by(1)
 
     expect(response).to have_http_status(:ok)
