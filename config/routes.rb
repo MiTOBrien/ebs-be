@@ -21,4 +21,6 @@ Rails.application.routes.draw do
   put 'users/:id', to: 'users#update'
 
   get 'readers', to: 'readers#index'
+
+  get 'genres', to: 'genres#index'
 end

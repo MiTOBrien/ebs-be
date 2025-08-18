@@ -9,28 +9,46 @@
 #   end
 
 # USER ROLES SEEDING
+
+puts "🌱 Seeding user roles..."
+
 ["Admin", "Author", "Arc Reader", "Beta Reader", "Proof Reader"].each do |role|
   Role.find_or_create_by!(role: role)
 end
 
 # BOOK GENRES SEEDING - GENERAL CATEGORIES
-["Biographies & Memoirs", "Business & Money","Children's Books", "History", "Teen & Young Adult", "Self-Help", "NSFW 18+"].each do |genre|
+
+puts "🌱 Seeding genres..."
+
+["Biographies & Memoirs", "Business & Money","Children's Books", "History", "Self-Help", "Teen & Young Adult", "Westerns", "NSFW 18+"].each do |genre|
   Genre.find_or_create_by!(name: genre)
 end
 
 # BOOK GENRES SEEDING - ROMANCE SUBCATEGORIES
-["Romance", "Romantic Suspense","Romantic Comedy", "New Adult & College", "Second Chances", "Forbidden Love", "Alpha Males", "Fantasy", "Enemies to Lovers", "Contemporary", "Werewolves & Shifters", "Paranormal", "Historical", "Dark", "Science Fiction"].each do |genre|
-  Genre.find_or_create_by!(name: genre)
+
+puts "🌱 Seeding romance subgenres..."
+
+romance = Genre.create!(name: "Romance")
+["Romantic Suspense","Romantic Comedy", "New Adult & College", "Second Chances", "Forbidden Love", "Alpha Males", "Fantasy", "Enemies to Lovers", "Contemporary", "Werewolves & Shifters", "Paranormal", "Historical Romance", "Dark Romance", "Science Fiction"].each do |genre|
+  Genre.find_or_create_by!(name: genre, parent: romance)
 end
 
 # BOOK GENRES SEEDING - MYSTERY, THRILLER & SUSPENSE SUBCATEGORIES
-["Mystery, Thriller & Suspense", "Crime", "Murder","Female Protagonists", "Amateur Sleuths", "Psychological Thrillers", "Supernatural", "Serial Killers", "Conspiracy", "Espionage", "Kidnapping", "Historical", "Vigilante", "Suspense", "Assassinations"].each do |genre|
-  Genre.find_or_create_by!(name: genre)
+
+puts "🌱 Seeding mystery, thriller & suspense subgenres..."
+
+mystery = Genre.create!(name: "Mystery, Thriller & Suspense")
+["Crime", "Murder", "Female Protagonists", "Amateur Sleuths", "Psychological Thrillers", "Supernatural", "Serial Killers", "Conspiracy", "Espionage", "Kidnapping", "Historical", "Vigilante", "Suspense", "Assassinations"].each do |genre|
+  Genre.find_or_create_by!(name: genre, parent: mystery)
 end
 
 # BOOK GENRES SEEDING - SCIENCE FICTION & FANTASY SUBCATEGORIES
-["Science Fiction & Fantasy", "Epic", "Dark Fantasy","Space Opera", "Post-Apocalyptic", "Aliens", "Wizards & Witches", "Urban Fantasy", "Dystopian", "Dragons", "Supernatural", "Myths & Legends", "Time Travel", "Genetic Engineering", "Space Travel", "Cyberpunk"].each do |genre|
-  Genre.find_or_create_by!(name: genre)
+
+puts "🌱 Seeding science fiction & fantasy subgenres..."
+
+sf_fantasy = Genre.create!(name: "Science Fiction & Fantasy")
+["Epic", "Dark Fantasy","Space Opera", "Post-Apocalyptic", "Aliens", "Wizards & Witches", "Urban Fantasy", "Dystopian", "Dragons", "Supernatural Sci-Fi Fantasy", "Myths & Legends", "Time Travel", "Genetic Engineering", "Space Travel", "Cyberpunk"].each do |genre|
+  Genre.find_or_create_by!(name: genre, parent: sf_fantasy)
 end
 
 # SEEDING TEST USERS
@@ -64,8 +82,8 @@ test_users = [
     roles: ['Arc Reader'],
     bio: 'Voracious reader specializing in sci-fi and fantasy. I provide honest, constructive reviews.',
     professional: false,
-    instagram: 'https://instagram.com/mike_reads',
-    x: 'https://twitter.com/mike_reviews'
+    instagram: 'mike_reads',
+    x: 'mike_reviews'
   },
   {
     email: 'betareader@earlyDraftSociety.com',
@@ -76,8 +94,8 @@ test_users = [
     roles: ['Beta Reader'],
     bio: 'Professional beta reader with 5+ years experience. I focus on plot, character development, and pacing.',
     professional: true,
-    facebook: 'https://facebook.com/sarahbetareads',
-    x: 'https://twitter.com/sarah_beta'
+    facebook: 'sarahbetareads',
+    x: 'sarah_beta'
   },
   {
     email: 'proofreader@earlyDraftSociety.com',
@@ -88,7 +106,7 @@ test_users = [
     roles: ['Proof Reader'],
     bio: 'Detail-oriented proofreader specializing in grammar, punctuation, and formatting. Former English teacher.',
     professional: true,
-    facebook: 'https://facebook.com/davidsharpediting'
+    facebook: 'davidsharpediting'
   },
   {
     email: 'multi@earlyDraftSociety.com',
@@ -99,8 +117,9 @@ test_users = [
     roles: ['Author', 'Beta Reader'],
     bio: 'Author and beta reader. I write romance novels and love helping other authors polish their work.',
     professional: false,
-    instagram: 'https://instagram.com/alex_writes_romance',
-    x: 'https://twitter.com/alex_multi'
+    facebook: 'alex_multi',
+    instagram: 'alex_writes_romance',
+    x: 'alex_multi'
   }
 ]
 
