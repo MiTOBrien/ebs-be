@@ -44,6 +44,8 @@ To quickly set up the database from the command line:
 ```sh
 rails db:{drop,create,migrate,seed} or rails db:reset
 ```
+## Database schema
+![homepage image](public/eds_db_schema.png)
 
 ## Routes/Endpoints
 ### users

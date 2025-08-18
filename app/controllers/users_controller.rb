@@ -9,6 +9,8 @@ class UsersController < ApplicationController
   end
 
   def update
+    Rails.logger.debug "Auth Header: #{request.headers['Authorization']}"
+    Rails.logger.debug "Current User: #{current_user.inspect}"
     if @user.update(user_params)
       update_roles if params[:user][:roles]
       render json: @user.as_json(include: { roles: { only: :role } }), status: :ok
