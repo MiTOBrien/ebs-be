@@ -9,11 +9,16 @@ class UsersController < ApplicationController
   end
 
   def update
-    Rails.logger.debug "Auth Header: #{request.headers['Authorization']}"
-    Rails.logger.debug "Current User: #{current_user.inspect}"
     if @user.update(user_params)
-      update_roles if params[:user][:roles]
-      render json: @user.as_json(include: { roles: { only: :role } }), status: :ok
+    
+      save_user_roles(@user) if params[:user][:roles].present?
+
+      if params[:user][:genre_ids]
+        genre_ids = params[:user][:genre_ids].reject(&:blank?)
+        @user.genres = Genre.where(id: genre_ids)
+      end
+
+      render json: @user.as_json(include: { roles: { only: [:id, :role] }, genres: { only: [:id, :name] } }), status: :ok
     else
       render json: { error: @user.errors.full_messages }, status: :unprocessable_entity
     end
@@ -39,13 +44,21 @@ class UsersController < ApplicationController
       :instagram,
       :x,
       :charges_for_services,
-      :profile_picture
+      :profile_picture,
+      role_ids: [],
+      genre_ids: [],
     )
   end
 
-  def update_roles
-    role_names = params[:user][:roles].map(&:downcase)
-    roles = Role.where('LOWER(role) IN (?)', role_names)
-    @user.roles = roles
+  def save_user_roles(user)
+    role_ids = params[:user][:role_ids].reject(&:blank?)
+    roles = Role.where(id: role_ids)
+
+    user.user_roles.destroy_all
+    roles.each do |role|
+      user.user_roles.create!(role: role)
+    end
+  rescue => e
+    Rails.logger.error "Failed to update roles for user #{user.id}: #{e.message}"
   end
 end
