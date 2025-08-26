@@ -21,7 +21,7 @@ class ReadersController < ApplicationController
           email: user.email,
           bio: user.bio,
           profile_picture: user.profile_picture,
-          roles: user.roles.pluck(:role), # Get array of role names
+          roles: user.roles.map { |r| { id: r.id, name: r.role } },
           charges_for_services: user.charges_for_services,
           facebook: user.facebook,
           instagram: user.instagram,
