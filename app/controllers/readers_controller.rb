@@ -13,23 +13,45 @@ class ReadersController < ApplicationController
                    .includes(:roles) # Include roles to avoid N+1 queries
       
       readers_data = readers.map do |user|
+          selected_genres = user.user_genres.includes(:genre).map(&:genre)
+
+  top_level_genres = selected_genres.select { |g| g.parent_id.nil? }
+  subgenre_map = selected_genres.group_by(&:parent_id)
+
+  formatted_genres = top_level_genres.map do |genre|
+    {
+      id: genre.id,
+      name: genre.name,
+      subgenres: (subgenre_map[genre.id] || []).map do |sub|
         {
-          id: user.id,
-          username: user.username,
-          first_name: user.first_name,
-          last_name: user.last_name,
-          email: user.email,
-          bio: user.bio,
-          profile_picture: user.profile_picture,
-          roles: user.roles.map { |r| { id: r.id, name: r.role } },
-          charges_for_services: user.charges_for_services,
-          facebook: user.facebook,
-          instagram: user.instagram,
-          x: user.x,
-          created_at: user.created_at,
-          updated_at: user.updated_at
+          id: sub.id,
+          name: sub.name,
+          parent_id: genre.id
         }
       end
+    }
+  end
+
+  {
+    id: user.id,
+    username: user.username,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    email: user.email,
+    bio: user.bio,
+    profile_picture: user.profile_picture,
+    roles: user.roles.map { |r| { id: r.id, name: r.role } },
+    charges_for_services: user.charges_for_services,
+    facebook: user.facebook,
+    instagram: user.instagram,
+    x: user.x,
+    created_at: user.created_at,
+    updated_at: user.updated_at,
+    genres: formatted_genres
+  }
+end
+      
+        
       
       render json: {
         success: true,
