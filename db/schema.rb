@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_18_133422) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_03_203526) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -61,6 +61,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_18_133422) do
     t.index ["user_id"], name: "index_user_roles_on_user_id"
   end
 
+  create_table "user_subgenres", force: :cascade do |t|
+    t.bigint "user_genre_id", null: false
+    t.bigint "subgenre_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["subgenre_id"], name: "index_user_subgenres_on_subgenre_id"
+    t.index ["user_genre_id"], name: "index_user_subgenres_on_user_genre_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -94,4 +103,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_18_133422) do
   add_foreign_key "user_genres", "users"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
+  add_foreign_key "user_subgenres", "genres", column: "subgenre_id"
+  add_foreign_key "user_subgenres", "user_genres"
 end
