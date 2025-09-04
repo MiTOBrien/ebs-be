@@ -1,5 +1,6 @@
 class UserSerializer
   include JSONAPI::Serializer
+
   attributes :id, :email, :first_name, :last_name, :professional, :username, :bio, :profile_picture, :facebook, :instagram, :x
 
   attribute :roles do |user|
@@ -7,12 +8,18 @@ class UserSerializer
   end
 
   attribute :genres do |user|
-    user.user_genres.includes(genre: :subgenres).map do |user_genre|
-      genre = user_genre.genre
+    # Get all genres the user selected
+    selected_genres = user.user_genres.includes(:genre).map(&:genre)
+
+    # Group by parent_id
+    top_level = selected_genres.select { |g| g.parent_id.nil? }
+    subgenre_map = selected_genres.group_by(&:parent_id)
+
+    top_level.map do |genre|
       {
         id: genre.id,
         name: genre.name,
-        subgenres: genre.subgenres.map do |sub|
+        subgenres: (subgenre_map[genre.id] || []).map do |sub|
           {
             id: sub.id,
             name: sub.name,
