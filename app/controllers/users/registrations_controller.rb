@@ -6,7 +6,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def respond_with(resource, _opts = {})
     if resource.persisted?
       # Save user roles after successful user creation
-      save_user_roles(resource) if params[:user][:roles].present?
+      save_user_roles(resource) if params[:user][:role_ids].present?
       
       # Handle subscription creation after successful user creation
       handle_subscription_creation(resource)
@@ -28,7 +28,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def sign_up_params
     params.require(:user).permit(:username, :first_name, :last_name, :email, :password, :password_confirmation, 
-                                 :charges_for_services, :subscription_type)
+                                 :charges_for_services, :subscription_type, role_ids: [])
   end
 
   def handle_subscription_creation(user)
@@ -131,33 +131,21 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def save_user_roles(user)
-    role_names = params[:user][:roles]
-    
-    # Map frontend role values to database role names
-    role_mapping = {
-      'author' => 'Author',
-      'arcreader' => 'Arc Reader',
-      'betareader' => 'Beta Reader',
-      'proofreader' => 'Proof Reader'
-    }
-    
-    role_names.each do |role_name|
-      mapped_role_name = role_mapping[role_name.downcase]
-      
-      if mapped_role_name
-        role = Role.find_by(role: mapped_role_name)
+    role_ids = params[:user][:role_ids]
+
+    if role_ids.present?
+      role_ids.each do |role_id|
+        role = Role.find_by(id: role_id)
         if role
           user.user_roles.create!(role: role)
         else
-          Rails.logger.error "Role not found in database: #{mapped_role_name}"
+          Rails.logger.error "Role ID not found: #{role_id}"
         end
-      else
-        Rails.logger.warn "Invalid role attempted: #{role_name} for user #{user.id}"
       end
+    else
+      Rails.logger.warn "No role_ids provided for user #{user.id}"
     end
   rescue => e
-    Rails.logger.error "Failed to save roles for user #{user.id}: #{e.message}"
-    # Role assignment failure shouldn't prevent account creation, but we should log it
-    # You might want to set a flag or send an admin notification here
+    Rails.logger.error "Failed to save roles for user #{user.id}: #{e.message}" 
   end
 end
