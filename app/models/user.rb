@@ -21,6 +21,9 @@ class User < ApplicationRecord
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
 
+  has_many :pricing_tiers, dependent: :destroy
+  accepts_nested_attributes_for :pricing_tiers, allow_destroy: true
+
   has_many :user_genres, dependent: :destroy
   has_many :genres, through: :user_genres
 
