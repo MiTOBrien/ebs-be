@@ -47,6 +47,7 @@ class UsersController < ApplicationController
       :profile_picture,
       role_ids: [],
       genre_ids: [],
+      pricing_tiers_attributes: [:id, :word_count, :price_cents, :currency, :_destroy]
     )
   end
 
