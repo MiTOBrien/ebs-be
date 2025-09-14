@@ -2,10 +2,20 @@ class UserSerializer
   include JSONAPI::Serializer
 
   attributes :id, :email, :first_name, :last_name, :professional, :username, :bio, :profile_picture, :charges_for_services, :professional, :facebook, :instagram, :x
-  has_many :pricing_tiers
 
   attribute :roles do |user|
     user.user_roles.includes(:role).map(&:role)
+  end
+
+  attribute :pricing_tiers do |user|
+    user.pricing_tiers.map do |tier|
+      {
+        id: tier.id,
+        word_count: tier.word_count,
+        price_cents: tier.price_cents,
+        currency: tier.currency
+      }
+    end
   end
 
   attribute :genres do |user|
