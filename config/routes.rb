@@ -19,6 +19,7 @@ Rails.application.routes.draw do
 
   get 'users', to: 'users#index'
   put 'users/:id', to: 'users#update'
+  put 'users/change-password', to: 'users#change_password'
 
   get 'readers', to: 'readers#index'
 
