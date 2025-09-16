@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
   before_action :require_admin_role!, only: [:index]
-  before_action :set_user, only: [:update]
+  before_action :set_user, only: [:update, :change_password]
 
   def index
     @users = User.all
@@ -26,20 +26,20 @@ class UsersController < ApplicationController
 
     def change_password
     # Validate current password
-    unless current_user.valid_password?(password_change_params[:current_password])
+    unless @user.valid_password?(password_change_params[:current_password])
       return render json: { error: 'Current password is incorrect.' }, status: :unauthorized
     end
 
     # Validate new password confirmation
-    if password_change_params[:new_password] != password_change_params[:new_password_confirmation]
+    if password_change_params[:password] != password_change_params[:password_confirmation]
       return render json: { error: 'New password confirmation does not match.' }, status: :unprocessable_entity
     end
 
     # Update password
-    if current_user.update(password: password_change_params[:new_password])
+    if @user.update(password: password_change_params[:password])
       render json: { message: 'Password changed successfully.' }, status: :ok
     else
-      render json: { error: current_user.errors.full_messages }, status: :unprocessable_entity
+      render json: { error: @user.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -54,7 +54,7 @@ class UsersController < ApplicationController
   end
 
   def password_change_params
-    params.permit(:current_password, :new_password, :new_password_confirmation)
+    params.require(:user).permit(:current_password, :password, :password_confirmation)
   end
 
   def user_params
