@@ -18,8 +18,8 @@ Rails.application.routes.draw do
   }
 
   get 'users', to: 'users#index'
-  put 'users/:id', to: 'users#update'
   put 'users/change-password', to: 'users#change_password'
+  put 'users/:id', to: 'users#update'
 
   get 'readers', to: 'readers#index'
 
