@@ -24,4 +24,6 @@ Rails.application.routes.draw do
   get 'readers', to: 'readers#index'
 
   get 'genres', to: 'genres#index'
+
+  get 'admin/role_summary', to: 'admin#role_summary'
 end
