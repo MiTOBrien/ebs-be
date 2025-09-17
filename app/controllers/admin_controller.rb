@@ -32,6 +32,6 @@ end
   private
 
   def ensure_admin!
-    redirect_to root_path unless current_user&.admin?
+    redirect_to root_path unless current_user&.has_role?('Admin')
   end
 end
