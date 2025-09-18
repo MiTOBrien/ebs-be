@@ -26,4 +26,6 @@ Rails.application.routes.draw do
   get 'genres', to: 'genres#index'
 
   get 'admin/role_summary', to: 'admin#role_summary'
+  get 'admin/genres', to: 'genres#index'
+  post 'admin/genres', to: 'genres#create'
 end
