@@ -28,4 +28,5 @@ Rails.application.routes.draw do
   get 'admin/role_summary', to: 'admin#role_summary'
   get 'admin/genres', to: 'genres#index'
   post 'admin/genres', to: 'genres#create'
+  patch 'admin/genres/:id', to: 'genres#update'
 end
