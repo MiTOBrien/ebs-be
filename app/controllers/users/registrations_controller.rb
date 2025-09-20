@@ -112,6 +112,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
     case subscription_type
     when 'paid_monthly'
       Rails.application.credentials.stripe[:monthly_price_id] || ENV['STRIPE_MONTHLY_PRICE_ID']
+    when 'paid_quarterly'
+      Rails.application.credentials.stripe[:quarterly_price_id] || ENV['STRIPE_QUARTERLY_PRICE_ID']
     when 'paid_annual'
       Rails.application.credentials.stripe[:annual_price_id] || ENV['STRIPE_ANNUAL_PRICE_ID']
     else
@@ -122,7 +124,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def subscription_amount(subscription_type)
     case subscription_type
     when 'paid_monthly'
-      1000 # $10.00
+      1500 # $15.00
+    when 'paid_quarterly'
+      3750 # $37.50
     when 'paid_annual'
       10000 # $100.00
     else
