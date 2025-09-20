@@ -13,6 +13,7 @@ class GenresController < ApplicationController
       render json: genre, status: :created
     else
       render json: { errors: genre.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   def update
@@ -30,5 +31,4 @@ class GenresController < ApplicationController
   def genre_params
     params.require(:genre).permit(:name, :parent_id)
   end
-
 end
