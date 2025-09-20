@@ -4,17 +4,28 @@ class Users::SessionsController < Devise::SessionsController
   private
 
   def respond_with(resource, _opt = {})
-    token = request.env['warden-jwt_auth.token']
-    render json: {
-      status: {
-        code: 200, message: 'Logged in successfully.',
-        token: token,
-        data: {
-          user: UserSerializer.new(resource).serializable_hash[:data][:attributes]
+    if resource.disabled?
+      render json: {
+        status: {
+          code: 403,
+          message: 'Account disabled.'
         }
-      }
-    }, status: :ok
+      }, status: :forbidden
+    else
+      token = request.env['warden-jwt_auth.token']
+      render json: {
+        status: {
+          code: 200,
+          message: 'Logged in successfully.',
+          token: token,
+          data: {
+            user: UserSerializer.new(resource).serializable_hash[:data][:attributes]
+          }
+        }
+      }, status: :ok
+    end
   end
+
 
   def respond_to_on_destroy
     if current_user

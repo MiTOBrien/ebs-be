@@ -31,6 +31,8 @@ class User < ApplicationRecord
   scope :readers, -> { joins(:roles).where(roles: { role: ['Arc Reader', 'Beta Reader', 'Proof Reader'] }).distinct }
   scope :free_services, -> { where(charges_for_services: false) }
   scope :paid_services, -> { where(charges_for_services: true) }
+  scope :active, -> { where(disabled: false) }
+  scope :disabled, -> { where(disabled: true) }
   
   # Helper methods
   def has_role?(role_name)

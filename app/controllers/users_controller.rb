@@ -24,7 +24,7 @@ class UsersController < ApplicationController
     end
   end
 
-    def change_password
+  def change_password
     # Validate current password
     unless @user.valid_password?(password_change_params[:current_password])
       return render json: { error: 'Current password is incorrect.' }, status: :unauthorized
@@ -41,6 +41,13 @@ class UsersController < ApplicationController
     else
       render json: { error: @user.errors.full_messages }, status: :unprocessable_entity
     end
+  end
+
+  def disable
+    user = User.find(params[:id])
+    user.update(disabled: true)
+
+    render json: { message: "User #{user.username} has been disabled." }, status: :ok
   end
 
   private
