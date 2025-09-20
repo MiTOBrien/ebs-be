@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   get 'genres', to: 'genres#index'
 
   get 'admin/role_summary', to: 'admin#role_summary'
+  patch 'admin/users/:id/disable', to: 'users#disable'
   get 'admin/genres', to: 'genres#index'
   post 'admin/genres', to: 'genres#create'
   patch 'admin/genres/:id', to: 'genres#update'
