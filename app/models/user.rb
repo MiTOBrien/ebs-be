@@ -47,6 +47,15 @@ class User < ApplicationRecord
     roles.pluck(:role)
   end
 
+  def active_for_authentication?
+    super && !disabled?
+  end
+
+  def inactive_message
+    disabled? ? :account_disabled : super
+  end
+
+
   # Generate jti on user creation
   before_create :generate_jti
 

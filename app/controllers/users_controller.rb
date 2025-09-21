@@ -43,6 +43,13 @@ class UsersController < ApplicationController
     end
   end
 
+  def enable
+    user = User.find(params[:id])
+    user.update(disabled: false)
+
+    render json: { message: "User #{user.username} has been re-enabled." }, status: :ok
+  end
+
   def disable
     user = User.find(params[:id])
     user.update(disabled: true)
