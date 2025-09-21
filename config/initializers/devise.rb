@@ -8,6 +8,13 @@
 #
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
+
+Warden::Manager.after_set_user except: :fetch do |user, auth, opts|
+  if user.is_a?(User) && user.disabled?
+    throw(:warden, message: "Your account has been disabled.")
+  end
+end
+
 Devise.setup do |config|
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
@@ -310,12 +317,6 @@ Devise.setup do |config|
   # When set to false, does not sign a user in automatically after their password is
   # changed. Defaults to true, so a user is signed in automatically after changing a password.
   # config.sign_in_after_change_password = true
-
-  Warden::Manager.before_authentication do |user, auth, opts|
-    if user.is_a?(User) && user.disabled?
-      throw(:warden, message: "Your account has been disabled.")
-    end
-  end
 
   config.jwt do |jwt|
     jwt.secret = Rails.application.credentials.devise_jwt_secret_key!
