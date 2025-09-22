@@ -9,6 +9,7 @@ class ReadersController < ApplicationController
       readers = User.joins(:user_roles)
                     .joins("JOIN roles ON roles.id = user_roles.role_id")
                     .where("roles.role IN (?)", reader_roles)
+                    .where(disabled: false)
                     .distinct
                     .includes(:roles, :pricing_tiers) # Include pricing_tiers to avoid N+1 queries
 
