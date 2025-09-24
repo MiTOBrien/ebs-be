@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_24_165428) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_24_182744) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -102,7 +102,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_24_165428) do
     t.boolean "charges_for_services"
     t.text "subscription_type"
     t.text "subscription_status"
-    t.boolean "disabled"
+    t.boolean "disabled", default: false, null: false
     t.jsonb "payment_options", default: [], null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
