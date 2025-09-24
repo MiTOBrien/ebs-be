@@ -49,6 +49,7 @@ class ReadersController < ApplicationController
           created_at: user.created_at,
           updated_at: user.updated_at,
           genres: formatted_genres,
+          payment_options: user.payment_options,
           pricing_tiers: user.pricing_tiers.map do |tier|
             {
               id: tier.id,
