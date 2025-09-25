@@ -85,7 +85,8 @@ class UsersController < ApplicationController
       role_ids: [],
       genre_ids: [],
       pricing_tiers_attributes: [:id, :word_count, :price_cents, :currency, :_destroy],
-      payment_options: []
+      payment_options: [],
+      :turnaround_time
     )
   end
 
