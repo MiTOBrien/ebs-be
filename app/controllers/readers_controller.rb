@@ -51,6 +51,7 @@ class ReadersController < ApplicationController
           genres: formatted_genres,
           payment_options: user.payment_options || [],
           turnaround_time: user.turnaround_time,
+          turnaround_time_label: user.turnaround_time_label,
           pricing_tiers: user.pricing_tiers.map do |tier|
             {
               id: tier.id,
