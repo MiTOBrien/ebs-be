@@ -82,11 +82,11 @@ class UsersController < ApplicationController
       :x,
       :charges_for_services,
       :profile_picture,
+      :turnaround_time,
       role_ids: [],
       genre_ids: [],
       pricing_tiers_attributes: [:id, :word_count, :price_cents, :currency, :_destroy],
-      payment_options: [],
-      :turnaround_time
+      payment_options: []
     )
   end
 
