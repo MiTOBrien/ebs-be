@@ -39,6 +39,7 @@ class ReadersController < ApplicationController
           first_name: user.first_name,
           last_name: user.last_name,
           email: user.email,
+          hide_name: user.hide_name,
           bio: user.bio,
           profile_picture: user.profile_picture,
           roles: user.roles.map { |r| { id: r.id, name: r.role } },
