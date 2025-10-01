@@ -8,6 +8,23 @@ class UsersController < ApplicationController
     render json: @users.as_json(include: { roles: { only: [:id, :role] } }), status: :ok
   end
 
+    def upload_profile_image
+      file = params[:image]
+      key = "profile_images/#{current_user.id}/#{SecureRandom.uuid}_#{file.original_filename}"
+
+      R2_CLIENT.put_object(
+        bucket: 'your-bucket-name',
+        key: key,
+        body: file.tempfile,
+        content_type: file.content_type
+      )
+
+      image_url = "https://<your-account-id>.r2.dev/#{key}"
+      current_user.update(avatar_url: image_url)
+
+      render json: { image_url: image_url }
+  end
+
   def update
     if @user.update(user_params)
     
