@@ -39,9 +39,13 @@ gem "rack-cors"
 gem 'devise'
 gem 'devise-jwt'
 gem 'stripe'
+gem 'dotenv-rails'
 
 # Use for Serializers
 gem 'jsonapi-serializer'
+
+# Use for file uploads to Cloudflare R2
+gem 'aws-sdk-s3'
 
 # Handle test coverage
 gem 'simplecov', require: false, group: :test
