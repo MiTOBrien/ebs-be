@@ -13,13 +13,13 @@ class UsersController < ApplicationController
       key = "profile_images/#{current_user.id}/#{SecureRandom.uuid}_#{file.original_filename}"
 
       R2_CLIENT.put_object(
-        bucket: 'your-bucket-name',
+        bucket: ENV['R2_BUCKET_NAME'],
         key: key,
         body: file.tempfile,
         content_type: file.content_type
       )
 
-      image_url = "https://<your-account-id>.r2.dev/#{key}"
+      image_url = "https://#{ENV['R2_ACCOUNT_ID']}.r2.dev/#{ENV['R2_BUCKET_NAME']}/#{key}"
       current_user.update(avatar_url: image_url)
 
       render json: { image_url: image_url }
