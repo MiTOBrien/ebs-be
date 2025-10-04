@@ -20,7 +20,7 @@ class UsersController < ApplicationController
       )
 
       image_url = "https://#{ENV['R2_ACCOUNT_ID']}.r2.dev/#{ENV['R2_BUCKET_NAME']}/#{key}"
-      current_user.update(avatar_url: image_url)
+      current_user.update(profile_picture: image_url)
 
       render json: { image_url: image_url }
   end
