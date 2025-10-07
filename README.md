@@ -5,7 +5,7 @@ This is a website designed for Arc, Beta, and Proof readers to be able to advert
 ![homepage image](public/eds_login_page.png)
 
 ## Deployed Site
-- Coming soon
+[Early Draft Society](https://earlydraftsociety.com)
 
 ## Front End Repo
 [Front End Repo](https://github.com/MiTOBrien/eds)
@@ -25,6 +25,12 @@ This is a website designed for Arc, Beta, and Proof readers to be able to advert
 * Factorybot
 * simplecov
 * Pry
+
+### CDN
+* CloudFlare R2
+
+### Mailer
+* MainGun
 
 ## Getting Started
 To run this locally clone this repository onto your local machine. Change directory into the eds-be directory and install all dependiences:
@@ -53,6 +59,19 @@ rails db:{drop,create,migrate,seed} or rails db:reset
 - Login           - /login
 - Logout          - /logout
 - Update profile  - /users/#id
+- Update password - /users/change-password
+- Forgot password - /users/forgot-password
+
+### arc/beta/proof readers
+- Get readers     - /readers
+
+### book genres & sub-genres
+- Get genres      - /genres
+
+### admin functions
+- Add genres      - /admin/genres
+- Update genres   - /admin/genres
+- Disable user    - /admin/users
 
 ## Testing Suite
 * RSpec
