@@ -13,7 +13,7 @@ class Users::PasswordsController < ApplicationController
     end
   end
 
-  def reset
+  def edit
     token = params[:token].to_s
 
     user = User.reset_password_by_token(
