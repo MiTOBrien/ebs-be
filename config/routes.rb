@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     registration: 'signup'
   },
   controllers: {
+    passwords: 'users/passwords',
     sessions: 'users/sessions',
     registrations: 'users/registrations'
   }
@@ -33,5 +34,5 @@ Rails.application.routes.draw do
   post 'admin/genres', to: 'genres#create'
   patch 'admin/genres/:id', to: 'genres#update'
 
-  post 'password/forgot', to: 'passwords#forgot'
+  # post 'password/forgot', to: 'users/passwords#forgot'
 end

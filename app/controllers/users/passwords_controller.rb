@@ -1,5 +1,5 @@
 class Users::PasswordsController < ApplicationController
-  def forgot
+  def create
     if params[:email].blank?
       return render json: { error: 'Email not present' }, status: :bad_request
     end
