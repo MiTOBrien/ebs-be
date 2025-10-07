@@ -1,10 +1,11 @@
 class Users::PasswordsController < ApplicationController
   def create
-    if params[:email].blank?
+    binding.pry
+    if params[:user][:email].blank?
       return render json: { error: 'Email not present' }, status: :bad_request
     end
 
-    user = User.find_by(email: params[:email])
+    user = User.find_by(email: params[:user][:email])
     if user
       user.send_reset_password_instructions
       render json: { message: 'Reset instructions sent to your email.' }, status: :ok
