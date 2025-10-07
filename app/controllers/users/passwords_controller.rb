@@ -1,6 +1,5 @@
 class Users::PasswordsController < ApplicationController
   def create
-    binding.pry
     if params[:user][:email].blank?
       return render json: { error: 'Email not present' }, status: :bad_request
     end
