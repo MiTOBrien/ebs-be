@@ -33,6 +33,4 @@ Rails.application.routes.draw do
   get 'admin/genres', to: 'genres#index'
   post 'admin/genres', to: 'genres#create'
   patch 'admin/genres/:id', to: 'genres#update'
-
-  # post 'password/forgot', to: 'users/passwords#forgot'
 end

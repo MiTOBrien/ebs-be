@@ -13,13 +13,13 @@ class Users::PasswordsController < ApplicationController
     end
   end
 
-  def edit
-    token = params[:token].to_s
+  def update
+    token = params[:user][:reset_password_token].to_s
 
     user = User.reset_password_by_token(
       reset_password_token: token,
-      password: params[:password],
-      password_confirmation: params[:password_confirmation]
+      password: params[:user][:password],
+      password_confirmation: params[:user][:password_confirmation]
     )
 
     if user.errors.empty?
