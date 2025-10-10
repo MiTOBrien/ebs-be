@@ -2,9 +2,9 @@ class PaymentsController < ApplicationController
   before_action :authenticate_user!
 
   PRICE_IDS = {
-    'monthly' => 'price_abc123',
-    'quarterly' => 'price_def456',
-    'annual' => 'price_xyz789'
+    'monthly' => 'monthly_subscription',
+    'quarterly' => 'quarterly_subscription',
+    'annual' => 'annual_subscription'
   }
 
   def create_checkout_session
