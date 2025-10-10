@@ -27,6 +27,8 @@ Rails.application.routes.draw do
 
   get 'genres', to: 'genres#index'
 
+  post 'payments/create_checkout_session', to: 'payments#create_checkout_session'
+
   get 'admin/role_summary', to: 'admin#role_summary'
   patch 'admin/users/:id/enable', to: 'users#enable'
   patch 'admin/users/:id/disable', to: 'users#disable'
