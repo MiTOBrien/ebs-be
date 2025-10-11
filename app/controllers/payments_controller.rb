@@ -27,6 +27,6 @@ class PaymentsController < ApplicationController
       cancel_url: 'http://localhost:3000/cancel'
     )
 
-    render json: { id: session.id }
+    render json: { url: session.url }
   end
 end
