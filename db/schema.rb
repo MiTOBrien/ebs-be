@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_27_151038) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_12_142946) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -91,8 +91,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_27_151038) do
     t.datetime "updated_at", null: false
     t.string "first_name"
     t.string "last_name"
-    t.boolean "professional"
-    t.boolean "acknowledgement"
+    t.boolean "tos_accepted"
     t.text "bio"
     t.string "profile_picture"
     t.string "jti", null: false
@@ -100,7 +99,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_27_151038) do
     t.string "facebook"
     t.string "instagram"
     t.string "x"
-    t.boolean "charges_for_services"
     t.text "subscription_type"
     t.text "subscription_status"
     t.boolean "disabled", default: false, null: false
