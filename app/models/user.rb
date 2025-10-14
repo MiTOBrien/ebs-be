@@ -16,7 +16,7 @@ class User < ApplicationRecord
   validates :subscription_type, inclusion: { in: %w[free monthly annual] }
   validates :subscription_status, inclusion: { in: %w[active cancelled past_due incomplete] }
   
-  before_validation :set_subscription_defaults, on: :create
+  # before_validation :set_subscription_defaults, on: :create
 
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
@@ -29,8 +29,6 @@ class User < ApplicationRecord
 
   # Scopes for easy querying
   scope :readers, -> { joins(:roles).where(roles: { role: ['Arc Reader', 'Beta Reader', 'Proof Reader'] }).distinct }
-  scope :free_services, -> { where(charges_for_services: false) }
-  scope :paid_services, -> { where(charges_for_services: true) }
   scope :active, -> { where(disabled: false) }
   scope :disabled, -> { where(disabled: true) }
   
@@ -71,12 +69,6 @@ class User < ApplicationRecord
   before_create :generate_jti
 
   private
-
-  def set_subscription_defaults
-    self.charges_for_services ||= false
-    self.subscription_type ||= 'free'
-    self.subscription_status ||= 'active'
-  end
 
   def generate_jti
     self.jti = SecureRandom.uuid

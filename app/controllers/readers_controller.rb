@@ -43,7 +43,6 @@ class ReadersController < ApplicationController
           bio: user.bio,
           profile_picture: user.profile_picture,
           roles: user.roles.map { |r| { id: r.id, name: r.role } },
-          charges_for_services: user.charges_for_services,
           facebook: user.facebook,
           instagram: user.instagram,
           x: user.x,
