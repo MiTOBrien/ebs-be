@@ -28,7 +28,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def sign_up_params
     params.require(:user).permit(:username, :first_name, :last_name, :email, :password, :password_confirmation, 
-                                 :charges_for_services, :subscription_type, role_ids: [])
+                                 :subscription_type, role_ids: [])
   end
 
   def handle_subscription_creation(user)
@@ -56,82 +56,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
     )
     
     user.update!(subscription_status: 'active')
-  end
-
-  def create_paid_subscription(user, subscription_type)
-    # Set user status to pending until payment is confirmed
-    user.update!(subscription_status: 'incomplete')
-    
-    # Create Stripe customer and subscription
-    stripe_customer = create_stripe_customer(user)
-    stripe_subscription = create_stripe_subscription(stripe_customer, subscription_type)
-    
-    # Create local subscription record
-    user.subscriptions.create!(
-      subscription_type: subscription_type,
-      status: 'incomplete', # Will be updated via Stripe webhook
-      stripe_subscription_id: stripe_subscription.id,
-      stripe_customer_id: stripe_customer.id,
-      amount_cents: subscription_amount(subscription_type),
-      currency: 'USD',
-      current_period_start: Time.at(stripe_subscription.current_period_start),
-      current_period_end: Time.at(stripe_subscription.current_period_end)
-    )
-    
-    # You might want to return payment intent client secret to frontend
-    # for completing the payment setup
-  end
-
-  def create_stripe_customer(user)
-    Stripe::Customer.create(
-      email: user.email,
-      metadata: { user_id: user.id }
-    )
-  rescue Stripe::StripeError => e
-    Rails.logger.error "Stripe customer creation failed: #{e.message}"
-    raise "Payment setup failed. Please try again."
-  end
-
-  def create_stripe_subscription(customer, subscription_type)
-    price_id = stripe_price_id(subscription_type)
-    
-    Stripe::Subscription.create(
-      customer: customer.id,
-      items: [{ price: price_id }],
-      payment_behavior: 'default_incomplete',
-      payment_settings: { save_default_payment_method: 'on_subscription' },
-      expand: ['latest_invoice.payment_intent']
-    )
-  rescue Stripe::StripeError => e
-    Rails.logger.error "Stripe subscription creation failed: #{e.message}"
-    raise "Subscription setup failed. Please try again."
-  end
-
-  def stripe_price_id(subscription_type)
-    # You'll need to create these price IDs in your Stripe dashboard
-    case subscription_type
-    when 'paid_monthly'
-      Rails.application.credentials.stripe[:monthly_price_id] || ENV['STRIPE_MONTHLY_PRICE_ID']
-    when 'paid_quarterly'
-      Rails.application.credentials.stripe[:quarterly_price_id] || ENV['STRIPE_QUARTERLY_PRICE_ID']
-    when 'paid_annual'
-      Rails.application.credentials.stripe[:annual_price_id] || ENV['STRIPE_ANNUAL_PRICE_ID']
-    else
-      raise "Invalid subscription type: #{subscription_type}"
-    end
-  end
-
-  def subscription_amount(subscription_type)
-    case subscription_type
-    when 'paid_monthly'
-      1500 # $15.00
-    when 'paid_quarterly'
-      3750 # $37.50
-    when 'paid_annual'
-      10000 # $100.00
-    else
-      0
-    end
   end
 
   def save_user_roles(user)

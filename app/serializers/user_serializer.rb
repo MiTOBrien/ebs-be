@@ -1,7 +1,7 @@
 class UserSerializer
   include JSONAPI::Serializer
 
-  attributes :id, :email, :first_name, :last_name, :professional, :username, :bio, :profile_picture, :charges_for_services, :facebook, :instagram, :x, :disabled, :payment_options, :turnaround_time, :hide_name
+  attributes :id, :email, :first_name, :last_name, :username, :bio, :profile_picture, :facebook, :instagram, :x, :disabled, :payment_options, :turnaround_time, :hide_name
 
   attribute :roles do |user|
     user.user_roles.includes(:role).map(&:role)

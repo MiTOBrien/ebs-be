@@ -20,7 +20,7 @@ class UsersController < ApplicationController
       )
 
       # image_url = "https://#{ENV['R2_ACCOUNT_ID']}.r2.dev/#{ENV['R2_BUCKET_NAME']}/#{key}"
-      image_url = "https://earlydraftsociety.com/#{key}"
+      image_url = "https://images.earlydraftsociety.com/#{key}"
       current_user.update(profile_picture: image_url)
 
       render json: { image_url: image_url }
@@ -99,7 +99,6 @@ class UsersController < ApplicationController
       :facebook,
       :instagram,
       :x,
-      :charges_for_services,
       :profile_picture,
       :turnaround_time,
       role_ids: [],
