@@ -19,7 +19,6 @@ class UsersController < ApplicationController
         content_type: file.content_type
       )
 
-      # image_url = "https://#{ENV['R2_ACCOUNT_ID']}.r2.dev/#{ENV['R2_BUCKET_NAME']}/#{key}"
       image_url = "https://images.earlydraftsociety.com/#{key}"
       current_user.update(profile_picture: image_url)
 
