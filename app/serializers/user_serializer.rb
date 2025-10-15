@@ -3,6 +3,10 @@ class UserSerializer
 
   attributes :id, :email, :first_name, :last_name, :username, :bio, :profile_picture, :facebook, :instagram, :x, :disabled, :payment_options, :turnaround_time, :hide_name, :subscribed
 
+  attribute :subscribed do |user|
+    user.subscribed?
+  end
+
   attribute :roles do |user|
     user.user_roles.includes(:role).map(&:role)
   end

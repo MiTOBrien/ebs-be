@@ -9,8 +9,8 @@ class PaymentsController < ApplicationController
 
   def create_checkout_session
     base_url = Rails.env.production? ?
-    Rails.application.credentials.dig(:stripe, :base_url_live) :
-    Rails.application.credentials.dig(:stripe, :base_url_test)
+      Rails.application.credentials.dig(:stripe, :base_url_live) :
+      Rails.application.credentials.dig(:stripe, :base_url_test)
 
     tier = params[:tier]
     price_id = PRICE_IDS[tier]
@@ -28,7 +28,10 @@ class PaymentsController < ApplicationController
       mode: 'subscription',
       customer_email: current_user.email,
       success_url: "#{base_url}/success",
-      cancel_url: "#{base_url}/cancel"
+      cancel_url: "#{base_url}/cancel",
+      metadata: {
+        user_id: current_user.id
+      }
     )
 
     render json: { url: session.url }
