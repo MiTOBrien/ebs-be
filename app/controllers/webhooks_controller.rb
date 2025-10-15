@@ -19,6 +19,8 @@ class WebhooksController < ApplicationController
     end
 
     case event['type']
+    when 'checkout.session.completed'
+      handle_checkout_completed(event['data']['object'])
     when 'invoice.payment_succeeded'
       handle_successful_payment(event['data']['object'])
     when 'invoice.payment_failed'
@@ -29,6 +31,31 @@ class WebhooksController < ApplicationController
   end
 
   private
+
+  def handle_checkout_completed(session)
+    customer_id = session['customer']
+    subscription_id = session['subscription']
+    user_id = session['metadata']['user_id'] # You must pass this in your Stripe Checkout metadata
+
+    return unless user_id && subscription_id
+
+    user = User.find_by(id: user_id)
+    return unless user
+
+    stripe_sub = Stripe::Subscription.retrieve(subscription_id)
+
+    Subscription.create!(
+      user: user,
+      stripe_subscription_id: stripe_sub.id,
+      stripe_customer_id: customer_id,
+      subscription_type: stripe_sub.items.data.first.price.recurring.interval,
+      status: stripe_sub.status,
+      current_period_start: Time.at(stripe_sub.current_period_start),
+      current_period_end: Time.at(stripe_sub.current_period_end),
+      amount_cents: stripe_sub.items.data.first.price.unit_amount,
+      currency: stripe_sub.items.data.first.price.currency
+    )
+  end
 
   def handle_successful_payment(invoice)
     subscription = Subscription.find_by(stripe_subscription_id: invoice['subscription'])
