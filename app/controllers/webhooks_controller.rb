@@ -1,5 +1,7 @@
 class WebhooksController < ApplicationController
-  skip_before_action :verify_authenticity_token
+  # skip_before_action :verify_authenticity_token
+  # skip_forgery_protection
+  # protect_from_forgery with: :null_session
 
   def stripe
     payload = request.body.read
@@ -43,17 +45,18 @@ class WebhooksController < ApplicationController
     return unless user
 
     stripe_sub = Stripe::Subscription.retrieve(subscription_id)
+    item = stripe_sub.items.data.first
 
     Subscription.create!(
       user: user,
       stripe_subscription_id: stripe_sub.id,
       stripe_customer_id: customer_id,
-      subscription_type: stripe_sub.items.data.first.price.recurring.interval,
+      subscription_type: item.price.recurring.interval,
       status: stripe_sub.status,
-      current_period_start: Time.at(stripe_sub.current_period_start),
-      current_period_end: Time.at(stripe_sub.current_period_end),
-      amount_cents: stripe_sub.items.data.first.price.unit_amount,
-      currency: stripe_sub.items.data.first.price.currency
+      current_period_start: Time.at(item.current_period_start),
+      current_period_end: Time.at(item.current_period_end),
+      amount_cents: item.price.unit_amount,
+      currency: item.price.currency
     )
   end
 

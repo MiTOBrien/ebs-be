@@ -13,7 +13,7 @@ class User < ApplicationRecord
   validates :username, presence: true, uniqueness: true
   validates :first_name, :last_name, presence: true
 
-  validates :subscription_type, inclusion: { in: %w[free monthly annual] }
+  validates :subscription_type, inclusion: { in: %w[month year] }
   validates :subscription_status, inclusion: { in: %w[active cancelled past_due incomplete] }
   
   # before_validation :set_subscription_defaults, on: :create
