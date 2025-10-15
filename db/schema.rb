@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_12_142946) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_15_162402) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -99,8 +99,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_12_142946) do
     t.string "facebook"
     t.string "instagram"
     t.string "x"
-    t.text "subscription_type"
-    t.text "subscription_status"
     t.boolean "disabled", default: false, null: false
     t.jsonb "payment_options", default: [], null: false
     t.integer "turnaround_time", default: 0
