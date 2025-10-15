@@ -65,6 +65,10 @@ class User < ApplicationRecord
     TURNAROUND_TIME_LABELS[turnaround_time] || 'Unknown'
   end
 
+  def subscribed?
+    current_subscription.present?
+  end
+
   # Generate jti on user creation
   before_create :generate_jti
 
