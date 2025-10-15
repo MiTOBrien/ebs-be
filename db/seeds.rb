@@ -140,7 +140,9 @@ admin = User.find_or_create_by(email: 'administrator@earlyDraftSociety.com') do 
   u.password_confirmation = 'Password1!'
   u.first_name = 'Admin'
   u.last_name = 'User'
-  u.username = 'admin'
+  u.username = 'admin_user'
+  u.subscription_status = 'active'
+  u.subscription_type = 'free'
   u.tos_accepted = true
 end
 
