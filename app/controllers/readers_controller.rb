@@ -59,7 +59,8 @@ class ReadersController < ApplicationController
               price_cents: tier.price_cents,
               currency: tier.currency
             }
-          end
+          end,
+          subscribed: user.subscribed?,
         }
       end
 
