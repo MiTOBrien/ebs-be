@@ -5,7 +5,7 @@ class UsersController < ApplicationController
 
   def index
     @users = User.all
-    render json: @users.as_json(include: { roles: { only: [:id, :role] } }), status: :ok
+    render json: @users.as_json(methods:[:subscribed], include: { roles: { only: [:id, :role] } }), status: :ok
   end
 
     def upload_profile_image
