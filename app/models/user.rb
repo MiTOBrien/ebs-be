@@ -66,6 +66,10 @@ class User < ApplicationRecord
     current_subscription.present?
   end
 
+  def subscribed
+    subscribed?
+  end
+
   # Generate jti on user creation
   before_create :generate_jti
 
