@@ -35,7 +35,7 @@ class UsersController < ApplicationController
         @user.genres = Genre.where(id: genre_ids)
       end
 
-      render json: @user.as_json(include: { roles: { only: [:id, :role] }, genres: { only: [:id, :name] }, pricing_tiers: { only: [:id, :word_count, :price_cents, :currency] } }), status: :ok
+      render json: @user.as_json(methods: [:subscribed], include: { roles: { only: [:id, :role] }, genres: { only: [:id, :name] }, pricing_tiers: { only: [:id, :word_count, :price_cents, :currency] } }), status: :ok
     else
       render json: { error: @user.errors.full_messages }, status: :unprocessable_entity
     end
