@@ -25,6 +25,17 @@ class UsersController < ApplicationController
       render json: { image_url: image_url }
   end
 
+  def show
+    render json: current_user.as_json(
+      methods: [:subscribed],
+      include: {
+        roles: { only: [:id, :role] },
+        genres: { only: [:id, :name] },
+        pricing_tiers: { only: [:id, :word_count, :price_cents, :currency] }
+      }
+    )
+  end
+
   def update
     if @user.update(user_params)
     

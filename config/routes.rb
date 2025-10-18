@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   }
 
   get 'users', to: 'users#index'
+  get 'users/me', to: 'users#show'
   put 'users/change-password', to: 'users#change_password'
   post 'users/profile-image', to: 'users#upload_profile_image'
   put 'users/:id', to: 'users#update'
