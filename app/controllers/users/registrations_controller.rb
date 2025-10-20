@@ -8,9 +8,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
       # Save user roles after successful user creation
       save_user_roles(resource) if params[:user][:role_ids].present?
       
-      # Handle subscription creation after successful user creation
-      handle_subscription_creation(resource)
-      
       @token = request.env['warden-jwt_auth.token']
       headers['Authorization'] = @token
 
@@ -20,43 +17,28 @@ class Users::RegistrationsController < Devise::RegistrationsController
                   data: UserSerializer.new(resource).serializable_hash[:data][:attributes] }
       }
     else
+      Rails.logger.debug "Signup failed: #{resource.errors.full_messages}"
+
+      message = if resource.errors[:email].any? || resource.errors[:username].any?
+                  "Email or username is already taken."
+                else
+                  resource.errors.full_messages.to_sentence
+                end
+
       render json: {
-        status: { message: "User couldn't be created successfully. #{resource.errors.full_messages.to_sentence}" }
+        status: { message: "User couldn't be created successfully. #{message}" }
       }, status: :unprocessable_entity
+      # render json: {
+      #   status: { message: "User couldn't be created successfully. #{resource.errors.full_messages.to_sentence}" }
+      # }, status: :unprocessable_entity
     end
   end
 
   def sign_up_params
     params.require(:user).permit(:username, :first_name, :last_name, :email, :password, :password_confirmation, 
-                                 :subscription_type, role_ids: [])
+                                 :tos_accepted, role_ids: [])
   end
 
-  def handle_subscription_creation(user)
-    subscription_type = user.subscription_type || 'free'
-    
-    begin
-      if subscription_type == 'free'
-        create_free_subscription(user)
-      else
-        create_paid_subscription(user, subscription_type)
-      end
-    rescue => e
-      Rails.logger.error "Subscription creation failed for user #{user.id}: #{e.message}"
-      # You might want to send an email notification or set a flag for manual review
-      user.update(subscription_status: 'incomplete')
-    end
-  end
-
-  def create_free_subscription(user)
-    user.subscriptions.create!(
-      subscription_type: 'free',
-      status: 'active',
-      amount_cents: 0,
-      currency: 'USD'
-    )
-    
-    user.update!(subscription_status: 'active')
-  end
 
   def save_user_roles(user)
     role_ids = params[:user][:role_ids]
