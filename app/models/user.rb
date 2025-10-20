@@ -12,6 +12,7 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :username, presence: true, uniqueness: true
   validates :first_name, :last_name, presence: true
+  validates :tos_accepted, acceptance: true
   
   # before_validation :set_subscription_defaults, on: :create
 
