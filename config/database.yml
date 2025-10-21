@@ -89,5 +89,10 @@ queue:
 cache:
   <<: *default
   url: <%= ENV['DATABASE_URL'] %>
+
+cable:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
+
   # url: <%= ENV['DATABASE_URL'] %>
   # pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } 
