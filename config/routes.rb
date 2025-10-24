@@ -31,6 +31,7 @@ Rails.application.routes.draw do
 
   post 'payments/create_checkout_session', to: 'payments#create_checkout_session'
   post 'webhooks/stripe', to: 'webhooks#stripe'
+  delete 'payments/cancel/:id', to: 'payments#cancel'
 
   get 'admin/role_summary', to: 'admin#role_summary'
   patch 'admin/users/:id/enable', to: 'users#enable'
