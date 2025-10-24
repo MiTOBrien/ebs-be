@@ -36,4 +36,10 @@ class PaymentsController < ApplicationController
 
     render json: { url: session.url }
   end
+
+  def cancel
+    subscription_id = params[:id]
+    Stripe::Subscription.update(subscription_id, { cancel_at_period_end: true })
+    render json: { success: true }
+  end
 end
