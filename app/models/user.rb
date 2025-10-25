@@ -75,6 +75,10 @@ class User < ApplicationRecord
     subscriptions.find_by(status: 'active')
   end
 
+  def subscription_id
+    subscriptions.find_by(status: %w[active canceling])&.stripe_subscription_id
+  end
+
   # Generate jti on user creation
   before_create :generate_jti
 
