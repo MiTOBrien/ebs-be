@@ -54,7 +54,7 @@ class UsersController < ApplicationController
 
   def show
     render json: current_user.as_json(
-      methods: [:subscribed],
+      methods: [:subscribed, :subscription_id],
       include: {
         roles: { only: [:id, :role] },
         genres: { only: [:id, :name] },
