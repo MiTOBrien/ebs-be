@@ -4,7 +4,8 @@ class PaymentsController < ApplicationController
   PRICE_IDS = {
     'monthly' => 'price_1SH2o1FE1jMpR7Y1bS4ZaQEe',
     'quarterly' => 'price_1SH2r0FE1jMpR7Y1AZD3Fuqw',
-    'annual' => 'price_1SH2sQFE1jMpR7Y1WBjAHRNl'
+    'annual' => 'price_1SH2sQFE1jMpR7Y1WBjAHRNl',
+    'lifetime' => 'price_1SM6mJFE1jMpR7Y1IMAMLbu3'
   }
 
   def create_checkout_session

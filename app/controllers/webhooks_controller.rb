@@ -27,8 +27,10 @@ class WebhooksController < ApplicationController
       handle_successful_payment(event['data']['object'])
     when 'invoice.payment_failed'
       handle_failed_payment(event['data']['object'])
+    when 'customer.subscription.updated'
+      handle_subscription_updated(event['data']['object'])
     end
-
+    
     render json: { status: 'success' }
   end
 
@@ -75,4 +77,20 @@ class WebhooksController < ApplicationController
       subscription.user.update!(subscription_status: 'past_due')
     end
   end
+
+  def handle_subscription_updated(subscription_data)
+    subscription = Subscription.find_by(stripe_subscription_id: subscription_data['id'])
+    return unless subscription
+
+    # Update cancellation status
+    if subscription_data['cancel_at_period_end']
+      subscription.update!(status: 'canceling')
+      subscription.user.update!(subscription_status: 'canceling')
+    else
+      # If cancellation was reversed
+      subscription.update!(status: subscription_data['status'])
+      subscription.user.update!(subscription_status: subscription_data['status'])
+    end
+  end
+
 end

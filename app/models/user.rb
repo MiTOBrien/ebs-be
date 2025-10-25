@@ -71,6 +71,10 @@ class User < ApplicationRecord
     subscribed?
   end
 
+  def subscription
+    subscriptions.find_by(status: 'active')
+  end
+
   # Generate jti on user creation
   before_create :generate_jti
 

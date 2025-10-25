@@ -7,6 +7,10 @@ class UserSerializer
     user.subscribed?
   end
 
+  attribute :subscription_id do |user|
+    user.subscription&.stripe_subscription_id
+  end
+
   attribute :roles do |user|
     user.user_roles.includes(:role).map(&:role)
   end
