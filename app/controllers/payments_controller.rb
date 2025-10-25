@@ -14,6 +14,7 @@ class PaymentsController < ApplicationController
       Rails.application.credentials.dig(:stripe, :base_url_test)
 
     tier = params[:tier]
+    mode = tier == 'lifetime' ? 'payment' : 'subscription'
     price_id = PRICE_IDS[tier]
 
     unless price_id
@@ -26,12 +27,13 @@ class PaymentsController < ApplicationController
         price: price_id,
         quantity: 1
       }],
-      mode: 'subscription',
+      mode: mode,
       customer_email: current_user.email,
       success_url: "#{base_url}/success",
       cancel_url: "#{base_url}/cancel",
       metadata: {
-        user_id: current_user.id
+        user_id: current_user.id,
+        tier: tier
       }
     )
 
