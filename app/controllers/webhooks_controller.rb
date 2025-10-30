@@ -29,6 +29,8 @@ class WebhooksController < ApplicationController
       handle_failed_payment(event['data']['object'])
     when 'customer.subscription.updated'
       handle_subscription_updated(event['data']['object'])
+    when 'charge.succeeded'
+      handle_charge_succeeded(event['data']['object'])
     end
     
     render json: { status: 'success' }
@@ -37,29 +39,52 @@ class WebhooksController < ApplicationController
   private
 
   def handle_checkout_completed(session)
+    user_id = session['metadata']['user_id']
+    tier = session['metadata']['tier']
     customer_id = session['customer']
     subscription_id = session['subscription']
-    user_id = session['metadata']['user_id'] # You must pass this in your Stripe Checkout metadata
 
-    return unless user_id && subscription_id
+    return unless user_id
 
     user = User.find_by(id: user_id)
     return unless user
 
-    stripe_sub = Stripe::Subscription.retrieve(subscription_id)
-    item = stripe_sub.items.data.first
+    user.update!(stripe_customer_id: customer_id)
 
-    Subscription.create!(
-      user: user,
-      stripe_subscription_id: stripe_sub.id,
-      stripe_customer_id: customer_id,
-      subscription_type: item.price.recurring.interval,
-      status: stripe_sub.status,
-      current_period_start: Time.at(item.current_period_start),
-      current_period_end: Time.at(item.current_period_end),
-      amount_cents: item.price.unit_amount,
-      currency: item.price.currency
-    )
+    if subscription_id
+      # Handle recurring subscription
+      stripe_sub = Stripe::Subscription.retrieve(subscription_id)
+      item = stripe_sub.items.data.first
+
+      Subscription.create!(
+        user: user,
+        stripe_subscription_id: stripe_sub.id,
+        stripe_customer_id: customer_id,
+        subscription_type: item.price.recurring.interval,
+        status: stripe_sub.status,
+        current_period_start: Time.at(item.current_period_start),
+        current_period_end: Time.at(item.current_period_end),
+        amount_cents: item.price.unit_amount,
+        currency: item.price.currency
+      )
+    else
+      # Handle one-time lifetime purchase
+      payment_intent_id = session['payment_intent']
+      payment_intent = Stripe::PaymentIntent.retrieve(payment_intent_id)
+      amount_cents = payment_intent.amount
+      currency = payment_intent.currency
+
+      Subscription.create!(
+        user: user,
+        stripe_customer_id: customer_id,
+        subscription_type: 'lifetime',
+        status: 'active',
+        current_period_start: Time.current,
+        current_period_end: nil,
+        amount_cents: amount_cents,
+        currency: currency
+      )
+    end
   end
 
   def handle_successful_payment(invoice)
@@ -68,6 +93,27 @@ class WebhooksController < ApplicationController
       subscription.update!(status: 'active')
       subscription.user.update!(subscription_status: 'active')
     end
+  end
+
+  def handle_charge_succeeded(charge)
+    customer_id = charge['customer']
+    payment_intent_id = charge['payment_intent']
+    amount_cents = charge['amount']
+    currency = charge['currency']
+
+    user = User.find_by(stripe_customer_id: customer_id)
+    return unless user
+
+    Subscription.create!(
+      user: user,
+      stripe_customer_id: customer_id,
+      subscription_type: 'lifetime',
+      status: 'active',
+      current_period_start: Time.current,
+      current_period_end: nil,
+      amount_cents: amount_cents,
+      currency: currency
+    )
   end
 
   def handle_failed_payment(invoice)
