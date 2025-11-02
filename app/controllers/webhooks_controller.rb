@@ -125,18 +125,23 @@ class WebhooksController < ApplicationController
   end
 
   def handle_subscription_updated(subscription_data)
+    Rails.logger.info "Raw subscription_data: #{subscription_data.inspect}"
+    incoming_status = subscription_data['status'].to_s
+    Rails.logger.info "Updating subscription status to: #{incoming_status}"
+    Rails.logger.info "Attempting update with: #{incoming_status.inspect} (#{incoming_status.class})"
+    Rails.logger.info "incoming_status == 'active': #{incoming_status == 'active'}"
+
     subscription = Subscription.find_by(stripe_subscription_id: subscription_data['id'])
     return unless subscription
 
-    # Update cancellation status
+    valid_statuses = %w[active canceled past_due incomplete canceling]
+
     if subscription_data['cancel_at_period_end']
       subscription.update!(status: 'canceling')
-      subscription.user.update!(subscription_status: 'canceling')
+    elsif valid_statuses.include?(incoming_status)
+      subscription.update!(status: incoming_status)
     else
-      # If cancellation was reversed
-      subscription.update!(status: subscription_data['status'])
-      subscription.user.update!(subscription_status: subscription_data['status'])
+      Rails.logger.warn "Skipping update: invalid status '#{incoming_status}'"
     end
   end
-
 end
