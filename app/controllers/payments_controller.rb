@@ -1,13 +1,6 @@
 class PaymentsController < ApplicationController
   before_action :authenticate_user!
 
-  PRICE_IDS = {
-    'monthly' => 'price_1SH2o1FE1jMpR7Y1bS4ZaQEe',
-    'quarterly' => 'price_1SH2r0FE1jMpR7Y1AZD3Fuqw',
-    'annual' => 'price_1SH2sQFE1jMpR7Y1WBjAHRNl',
-    'lifetime' => 'price_1SM6mJFE1jMpR7Y1IMAMLbu3'
-  }
-
   def create_checkout_session
     base_url = Rails.env.production? ?
       Rails.application.credentials.dig(:stripe, :base_url_live) :
@@ -15,7 +8,7 @@ class PaymentsController < ApplicationController
 
     tier = params[:tier]
     mode = tier == 'lifetime' ? 'payment' : 'subscription'
-    price_id = PRICE_IDS[tier]
+    price_id = STRIPE_PRICE_IDS[tier.to_sym][Rails.env.to_sym]
 
     unless price_id
       render json: { error: 'Invalid tier selected' }, status: :unprocessable_entity and return
