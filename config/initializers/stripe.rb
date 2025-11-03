@@ -18,6 +18,7 @@ STRIPE_PRICE_IDS = {
   quarterly: {
     development: 'price_1SH2r0FE1jMpR7Y1AZD3Fuqw',
     production: 'price_1SLU7qFAHbnOAeZvKnBDqNcQ'
+  },
   annual: {
     development: 'price_1SH2sQFE1jMpR7Y1WBjAHRNl',
     production: 'price_1SLU8HFAHbnOAeZvcMW7DCH7'
