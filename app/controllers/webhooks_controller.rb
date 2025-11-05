@@ -66,10 +66,15 @@ class WebhooksController < ApplicationController
       )
     else
       # Handle one-time lifetime purchase
-      payment_intent_id = session['payment_intent']
-      payment_intent = Stripe::PaymentIntent.retrieve(payment_intent_id)
-      amount_cents = payment_intent.amount
-      currency = payment_intent.currency
+      amount_cents = session['amount_total'].to_i
+      currency = session['currency']
+
+      # Only fetch payment intent if it exists
+      if session['payment_intent'].present?
+        payment_intent = Stripe::PaymentIntent.retrieve(session['payment_intent'])
+        amount_cents = payment_intent.amount
+        currency = payment_intent.currency
+      end
 
       Subscription.create!(
         user: user,

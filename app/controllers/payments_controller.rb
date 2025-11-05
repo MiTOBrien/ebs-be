@@ -24,6 +24,7 @@ class PaymentsController < ApplicationController
       customer_email: current_user.email,
       success_url: "#{base_url}/success",
       cancel_url: "#{base_url}/cancel",
+      allow_promotion_codes: true,
       metadata: {
         user_id: current_user.id,
         tier: tier
