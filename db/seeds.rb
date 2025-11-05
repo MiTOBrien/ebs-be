@@ -53,86 +53,84 @@ end
 
 # SEEDING TEST USERS
 
-# puts "🌱 Seeding test users..."
+puts "🌱 Seeding test users..."
 
-# # Base test users (excluding admin)
-# base_users = [
-#   {
-#     first_name: 'Jane',
-#     last_name: 'Writer',
-#     username: 'jane_writer',
-#     roles: ['Author']
-#   },
-#   {
-#     first_name: 'Mike',
-#     last_name: 'Reviewer',
-#     username: 'mike_arc',
-#     roles: ['Arc Reader'],
-#     bio: 'Voracious reader specializing in sci-fi and fantasy.',
-#     instagram: 'mike_reads',
-#     x: 'mike_reviews'
-#   },
-#   {
-#     first_name: 'Sarah',
-#     last_name: 'Beta',
-#     username: 'sarah_beta',
-#     roles: ['Beta Reader'],
-#     bio: 'Professional beta reader with 5+ years experience.',
-#     facebook: 'sarahbetareads',
-#     x: 'sarah_beta'
-#   },
-#   {
-#     first_name: 'David',
-#     last_name: 'Sharp',
-#     username: 'david_proof',
-#     roles: ['Proof Reader'],
-#     bio: 'Detail-oriented proofreader. Former English teacher.',
-#     facebook: 'davidsharpediting'
-#   },
-#   {
-#     first_name: 'Alex',
-#     last_name: 'Multi',
-#     username: 'alex_multi',
-#     roles: ['Author', 'Beta Reader'],
-#     bio: 'Author and beta reader.',
-#     facebook: 'alex_multi',
-#     instagram: 'alex_writes_romance',
-#     x: 'alex_multi'
-#   }
-# ]
+# Base test users (excluding admin)
+base_users = [
+  {
+    first_name: 'Jane',
+    last_name: 'Writer',
+    username: 'jane_writer',
+    roles: ['Author']
+  },
+  {
+    first_name: 'Mike',
+    last_name: 'Reviewer',
+    username: 'mike_arc',
+    roles: ['Arc Reader'],
+    bio: 'Voracious reader specializing in sci-fi and fantasy.',
+    instagram: 'mike_reads',
+    x: 'mike_reviews'
+  },
+  {
+    first_name: 'Sarah',
+    last_name: 'Beta',
+    username: 'sarah_beta',
+    roles: ['Beta Reader'],
+    bio: 'Professional beta reader with 5+ years experience.',
+    facebook: 'sarahbetareads',
+    x: 'sarah_beta'
+  },
+  {
+    first_name: 'David',
+    last_name: 'Sharp',
+    username: 'david_proof',
+    roles: ['Proof Reader'],
+    bio: 'Detail-oriented proofreader. Former English teacher.',
+    facebook: 'davidsharpediting'
+  },
+  {
+    first_name: 'Alex',
+    last_name: 'Multi',
+    username: 'alex_multi',
+    roles: ['Author', 'Beta Reader'],
+    bio: 'Author and beta reader.',
+    facebook: 'alex_multi',
+    instagram: 'alex_writes_romance',
+    x: 'alex_multi'
+  }
+]
 
-# # Create 20 of each base user type
-# 20.times do |i|
-#   base_users.each do |template|
-#     email = "#{template[:roles].first.downcase.gsub(' ', '')}#{i+1}@earlyDraftSociety.com"
-#     username = "#{template[:username]}_#{i+1}"
+# Create 20 of each base user type
+20.times do |i|
+  base_users.each do |template|
+    email = "#{template[:roles].first.downcase.gsub(' ', '')}#{i+1}@earlyDraftSociety.com"
+    username = "#{template[:username]}_#{i+1}"
 
-#     user = User.find_or_create_by(email: email) do |u|
-#       u.password = 'Password1!'
-#       u.password_confirmation = 'Password1!'
-#       u.first_name = "#{template[:first_name]}#{i+1}"
-#       u.last_name = template[:last_name]
-#       u.username = username
-#       u.bio = template[:bio]
-#       u.facebook = template[:facebook]
-#       u.instagram = template[:instagram]
-#       u.x = template[:x]
-#       u.subscription_status = 'active'
-#       u.subscription_type = 'free'
-#       u.tos_accepted = true
-#     end
+    user = User.find_or_create_by(email: email) do |u|
+      u.password = 'Password1!'
+      u.password_confirmation = 'Password1!'
+      u.first_name = "#{template[:first_name]}#{i+1}"
+      u.last_name = template[:last_name]
+      u.username = username
+      u.bio = template[:bio]
+      u.facebook = template[:facebook]
+      u.instagram = template[:instagram]
+      u.x = template[:x]
+      u.tos_accepted = true
+    end
 
-#     if user.persisted?
-#       template[:roles].each do |role_name|
-#         role = Role.find_by(role: role_name)
-#         UserRole.find_or_create_by!(user: user, role: role)
-#       end
-#       puts "  ✓ Created #{template[:roles].join(', ')} user: #{email}"
-#     else
-#       puts "  ❌ Failed to create #{email}: #{user.errors.full_messages.join(', ')}"
-#     end
-#   end
-# end
+    if user.persisted?
+      template[:roles].each do |role_name|
+        role = Role.find_by(role: role_name)
+        UserRole.find_or_create_by!(user: user, role: role)
+      end
+      puts "  ✓ Created #{template[:roles].join(', ')} user: #{email}"
+    else
+      puts "  ❌ Failed to create #{email}: #{user.errors.full_messages.join(', ')}"
+    end
+  end
+end
 
 # Create admin separately
 admin = User.find_or_create_by(email: 'administrator@earlyDraftSociety.com') do |u|
