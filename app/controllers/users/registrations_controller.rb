@@ -11,6 +11,8 @@ class Users::RegistrationsController < Devise::RegistrationsController
       @token = request.env['warden-jwt_auth.token']
       headers['Authorization'] = @token
 
+      UserMailer.welcome_email(resource).deliver_later
+      
       render json: {
         status: { code: 200, message: 'Signed up successfully.',
                   token: @token,
