@@ -63,6 +63,7 @@ Rails.application.configure do
     password: Rails.application.credentials.dig(:smtp, :password),
     address: "smtp.mailgun.org",
     port: 587,
+    domain: "mg.earlydraftsociety.com",
     authentication: :plain,
     enable_starttls_auto: true
   }
